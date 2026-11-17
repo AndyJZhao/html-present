@@ -59,4 +59,6 @@ CI is percentile 95%, stratified by true class, conditional on fixed trained mod
 
 ## Control scopes
 
-Task, evaluation and features update all main results including narrative. Curve chips share state across ROC/PR, capacity, net benefit and selective classification; empty selections remain empty. Confusion matrices have separate chips. A/B selectors share probability panels, image gallery and appendix matrix choices. Binary task is local; feature sweep and robustness table explicitly state their fixed evaluation scopes. CSV exports include current cohort identifiers; gallery export includes the entire filtered gallery, not only the visible page.
+Task, evaluation and features update all main results including narrative. Curve chips share state across ROC/PR, capacity, net benefit and selective classification; empty selections remain empty. Confusion matrices have separate chips. A/B selectors share probability panels, image gallery and appendix matrix choices. Binary task is local; prior-adjustment can use the main multiclass model or the current binary appendix (useful when main priors are uniform). Feature sweep and robustness table explicitly state their fixed evaluation scopes. CSV exports include current cohort identifiers; gallery export includes the entire filtered gallery, not only the visible page.
+
+Gallery records preserve the exact pre-rounding `prediction` and `confidence`; probability bars use six-decimal display probabilities. Error filters must use the exact prediction, so quantization cannot change a near-tie decision.

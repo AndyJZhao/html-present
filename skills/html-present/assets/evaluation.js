@@ -31,6 +31,7 @@
     b: first.models[1].id,
     op: "spec",
     benefit: "risk",
+    adjusted: "main",
     cls: 0,
     binary: first.task,
     mode: "all",
@@ -84,7 +85,12 @@
     id,
     rows,
     metrics,
-    { domain = [0, 1], baseline = [], baselineLabel = "random", ci = true } = {},
+    {
+      domain = [0, 1],
+      baseline = [],
+      baselineLabel = "random",
+      ci = true,
+    } = {},
   ) {
     const w = Math.max(1000, metrics.length * 185 + 200),
       left = 210,
@@ -106,7 +112,11 @@
         x = (v) => x0 + ((v - domain[0]) / (domain[1] - domain[0])) * (x1 - x0);
       s +=
         tx(x0, 24, name) +
-        tx(x0, 43, baseline[j] == null ? "" : `${baselineLabel} ${fmt(baseline[j], 2)}`);
+        tx(
+          x0,
+          43,
+          baseline[j] == null ? "" : `${baselineLabel} ${fmt(baseline[j], 2)}`,
+        );
       for (let a = 0; a <= 4; a++) {
         const v = domain[0] + (a * (domain[1] - domain[0])) / 4;
         s +=
@@ -597,8 +607,12 @@
       .map((r) => {
         const rb = bm.get(r.id);
         if (!rb) return null;
-        const pa = r.prediction ?? r.probabilities.indexOf(Math.max(...r.probabilities)),
-          pb = rb.prediction ?? rb.probabilities.indexOf(Math.max(...rb.probabilities));
+        const pa =
+            r.prediction ??
+            r.probabilities.indexOf(Math.max(...r.probabilities)),
+          pb =
+            rb.prediction ??
+            rb.probabilities.indexOf(Math.max(...rb.probabilities));
         return {
           ...r,
           b: rb.probabilities,
@@ -682,6 +696,12 @@
         .map((m) => matrix(m, bc, false, false))
         .join("");
     }
+    const ac = S.adjusted === "binary" ? bc : c;
+    $("adjusted-note").textContent =
+      `当前训练先验：${ac.train_prior.map(pct).join(" / ")}。` +
+      (Math.max(...ac.train_prior) - Math.min(...ac.train_prior) < 1e-8
+        ? "先验均匀，因此调整不会改变 argmax。切换到“当前附录二分类”可观察不均衡先验下的变化。"
+        : "非均匀先验会改变部分决策；这是假设类别权重相同的规则，并非重新训练或重新校准。");
     table(
       "adjusted-table",
       "先验调整只改变 argmax 决策",
@@ -692,7 +712,7 @@
         "Adjusted macro F1",
         "Adjusted BA",
       ],
-      c.models.map((m) => [
+      ac.models.map((m) => [
         m.label,
         pct(m.multiclass.accuracy),
         pct(m.multiclass.adjusted.accuracy),
@@ -700,9 +720,9 @@
         pct(m.multiclass.adjusted.balanced_accuracy),
       ]),
     );
-    $("adjusted-cm").innerHTML = c.models
+    $("adjusted-cm").innerHTML = ac.models
       .filter((m) => [S.a, S.b].includes(m.id))
-      .map((m) => matrix(m, c, true, false))
+      .map((m) => matrix(m, ac, true, false))
       .join("");
     table(
       "qc-table",
@@ -857,7 +877,11 @@
         ["own_spec", "Δ Own spec"],
         ["cap10", "Δ Top10 capture"],
       ],
-      { domain: [-maxDelta, maxDelta], baseline: [0, 0, 0, 0, 0, 0], baselineLabel: "no difference" },
+      {
+        domain: [-maxDelta, maxDelta],
+        baseline: [0, 0, 0, 0, 0, 0],
+        baselineLabel: "no difference",
+      },
     );
     dots(
       "multi-plot",
@@ -1081,6 +1105,10 @@
       S.limit = 24;
       renderGallery(cohort());
     });
+  $("adjusted-mode").onchange = (e) => {
+    S.adjusted = e.target.value;
+    renderAppendices(cohort());
+  };
   $("binary-task").onchange = (e) => {
     S.binary = e.target.value;
     renderAppendices(cohort());

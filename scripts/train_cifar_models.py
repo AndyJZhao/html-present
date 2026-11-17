@@ -152,7 +152,7 @@ def main():
     dest=ROOT/'outputs/cifar';dest.mkdir(parents=True,exist_ok=True)
     (dest/'predictions.json').write_text(json.dumps(out,ensure_ascii=False,separators=(',',':'))+'\n')
     (dest/'run.json').write_text(json.dumps(dict(job_id=os.environ['SLURM_JOB_ID'],partition=os.environ.get('SLURM_JOB_PARTITION'),python=platform.python_version(),sklearn=sklearn.__version__,numpy=np.__version__,git_revision=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),completed_at=datetime.now(timezone.utc).isoformat(),train_n=len(train),validation_n=len(val),test_n=len(test),seed=17),indent=2)+'\n')
-    (dest/'splits.json').write_text(json.dumps(dict(train=train.tolist(),validation=val.tolist(),test=test.tolist(),gallery=sorted(gallery)),indent=2)+'\n')
+    (dest/'splits.json').write_text(json.dumps(dict(train=train.tolist(),validation=val.tolist(),test=test.tolist(),gallery=sorted(int(i) for i in gallery)),indent=2)+'\n')
     print(f'TRAINING_COMPLETE {dest} cohorts={len(out["cohorts"])}',flush=True)
 
 

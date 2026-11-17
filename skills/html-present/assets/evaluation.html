@@ -317,6 +317,14 @@
         <div class="table-wrap" id="binary-table"></div>
         <div id="binary-cm" class="two-col"></div>
         <h3>先验调整后的决策</h3>
+        <label
+          >调整对象
+          <select id="adjusted-mode">
+            <option value="main">完整多分类</option>
+            <option value="binary">当前附录二分类</option>
+          </select></label
+        >
+        <p class="note" id="adjusted-note"></p>
         <p class="note">
           各类别概率除以训练先验再取
           argmax。排序概率没有改变；这不是模型原始决策。

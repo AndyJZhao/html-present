@@ -18,7 +18,7 @@ The reference's analytical interaction patterns are implemented in independent H
 | Per class | Recall, precision, F1, AUROC chart and six-metric table | Local class |
 | Feature-count study | PCA 16/32/64, two algorithms | Fixed clean full test; labelled |
 | Direct binary appendix | Independently trained binary model metrics / matrices | Local task, global evaluation/features |
-| Prior adjustment | Dividing by training prior before argmax | Global main cohort |
+| Prior adjustment | Dividing by training prior before argmax | Main or current binary appendix; labelled priors |
 | Output QC | Probability validity/repetition/confidence/ties | Global cohort; LLM fields N/A |
 | Methods | Splits, assumptions, sources, uncertainty, limitations | Static provenance |
 
