@@ -1,0 +1,20 @@
+#!/bin/bash
+#SBATCH --job-name=html-present-bootstrap
+#SBATCH --partition=long-cpu
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=4G
+#SBATCH --time=00:30:00
+#SBATCH --output=/network/scratch/j/jianan.zhao/html-present-bootstrap-%j.out
+set -euo pipefail
+: "${SLURM_JOB_ID:?Run through Slurm}"
+project_root=/network/scratch/j/jianan.zhao/html-present
+if [ ! -d "$project_root" ]; then
+  git clone https://github.com/AndyJZhao/html-present.git "$project_root"
+fi
+cd "$project_root"
+export PIP_CACHE_DIR="$project_root/.cache/pip"
+python3 --version
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-analysis.txt
+.venv/bin/python -m py_compile scripts/train_cifar_models.py skills/html-present/scripts/evaluate_predictions.py
+echo BOOTSTRAP_COMPLETE

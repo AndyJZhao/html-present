@@ -7,3 +7,10 @@ node_modules/
 docs/source-*.jpg
 docs/*comparison*.jpg
 docs/*preview*.jpg
+.venv/
+.cache/
+datasets/
+outputs/
+version_runs/
+version_worktrees/
+examples/*/predictions.json

@@ -1,0 +1,13 @@
+mila_harness:
+  project: html-present
+  host: mila
+  root: ~/scratch/html-present
+  worktrees: version_worktrees
+  runs: version_runs
+  python: .venv/bin/python
+  rootutils: false
+  slurm:
+    partition: long-cpu
+    cpus: 2
+    mem: 4G
+    time: 00:30:00
