@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euo pipefail
+: "${SLURM_JOB_ID:?Run through Mila Slurm}"
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -u scripts/train_cifar_models.py
+.venv/bin/python -u skills/html-present/scripts/evaluate_predictions.py outputs/cifar/predictions.json outputs/cifar/report.json --bootstrap 500
+.venv/bin/python skills/html-present/scripts/build_report.py outputs/cifar/report.json outputs/cifar/report.html
+printf 'STUDY_COMPLETE\n'

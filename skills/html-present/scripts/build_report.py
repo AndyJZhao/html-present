@@ -60,19 +60,62 @@ def validate(d):
             raise ValueError(f'{key} entries must be text')
 
 
+def validate_evaluation(d):
+    for key in ('title', 'intro', 'date'):
+        if not isinstance(d.get(key), str) or not d[key].strip():
+            raise ValueError(f'{key}: expected text')
+    for key in ('tasks', 'eval_sets', 'feature_sets', 'cohorts', 'methods'):
+        if not isinstance(d.get(key), list) or not d[key]:
+            raise ValueError(f'{key}: expected nonempty list')
+    url = urlparse(d['source']['url'])
+    if url.scheme not in ('http', 'https') or not url.netloc:
+        raise ValueError('Source URL must use HTTP(S)')
+    for bank in d.get('images', {}).values():
+        for value in bank.values():
+            if not re.fullmatch(r'data:image/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+', value):
+                raise ValueError('Images must be embedded PNG/JPEG/WebP data URLs')
+    seen = set()
+    for c in d['cohorts']:
+        identity = (c['kind'], c['task'], c['eval_set'], c['feature_set'])
+        if identity in seen: raise ValueError('Duplicate cohort')
+        seen.add(identity)
+        if c['n'] != len(c['y']) or c['n'] != len(c['sample_ids']):
+            raise ValueError('Cohort counts do not align')
+        if len(set(c['sample_ids'])) != c['n']: raise ValueError('Duplicate sample IDs')
+        k = len(c['classes'])
+        if sum(c['class_counts']) != c['n']: raise ValueError('Invalid class counts')
+        mids = [m['id'] for m in c['models']]
+        if len(mids) != len(set(mids)) or c['reference'] not in mids:
+            raise ValueError('Invalid model IDs/reference')
+        for m in c['models']:
+            if len(m['multiclass']['cm']) != k or sum(map(sum,m['multiclass']['cm'])) != c['n']:
+                raise ValueError('Confusion matrix counts do not align')
+            if any(len(r['probabilities']) != k for r in m['gallery']):
+                raise ValueError('Gallery probabilities do not align')
+    for t in d['tasks']:
+        for ev in d['eval_sets']:
+            for f in d['feature_sets']:
+                for kind in ('main','binary'):
+                    if (kind,t['id'],ev['id'],f['id']) not in seen:
+                        raise ValueError('Starter expects a complete main/binary cohort grid')
+
+
 def build(source, output):
     data = json.loads(Path(source).read_text(encoding='utf-8'))
-    validate(data)
+    evaluation = data.get("schema") == "html-present-evaluation/v1"
+    (validate_evaluation if evaluation else validate)(data)
     assets = Path(__file__).resolve().parents[1] / 'assets'
     # Escape HTML raw-text delimiters so data cannot terminate the JSON script.
     payload = json.dumps(data, ensure_ascii=False, allow_nan=False).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
-    replacements = {'__TITLE__': html.escape(data['title']), '__CSS__': (assets/'report.css').read_text(), '__JS__': (assets/'report.js').read_text(), '__DATA__': payload}
+    stem = 'evaluation' if evaluation else 'report'
+    css = (assets/'report.css').read_text() + ((assets/'evaluation.css').read_text() if evaluation else '')
+    replacements = {'__TITLE__': html.escape(data['title']), '__CSS__': css, '__JS__': (assets/f'{stem}.js').read_text(), '__DATA__': payload}
     # One pass: user text resembling a template token remains user text.
-    result = re.sub('|'.join(map(re.escape, replacements)), lambda m: replacements[m.group()], (assets/'report.html').read_text())
+    result = re.sub('|'.join(map(re.escape, replacements)), lambda m: replacements[m.group()], (assets/f'{stem}.html').read_text())
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(result, encoding='utf-8')
-    print(f'Built {output} ({len(result.encode()):,} bytes; {len(data["rows"])} rows)')
+    print(f"Built {output} ({len(result.encode()):,} bytes)")
 
 
 if __name__ == '__main__':

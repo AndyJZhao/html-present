@@ -13,8 +13,15 @@ if [ ! -d "$project_root" ]; then
 fi
 cd "$project_root"
 export PIP_CACHE_DIR="$project_root/.cache/pip"
-python3 --version
-python3 -m venv .venv
+mkdir -p configs/user
+if [ ! -e configs/user/env.yaml ]; then
+  umask 077
+  echo "{}" > configs/user/env.yaml
+fi
+source /etc/profile
+module load python/3.10
+python --version
+python -m venv .venv
 .venv/bin/python -m pip install -r requirements-analysis.txt
 .venv/bin/python -m py_compile scripts/train_cifar_models.py skills/html-present/scripts/evaluate_predictions.py
 echo BOOTSTRAP_COMPLETE
