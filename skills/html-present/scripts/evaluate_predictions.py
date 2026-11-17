@@ -197,7 +197,7 @@ def evaluate(c, boots, seed):
             qc=dict(method='predict_proba',n=len(y),distinct=len(unique),most_common=float(counts.max()/len(y)),
                 extreme=float((maxp>.99).mean()),ties=float(ties.mean()),valid=1.0,
                 top_token_not_digit=None,digit_mass_lt_05=None,argmax_matches_top_token=None,json_valid=None),
-            gallery=[dict(id=sid,y=int(y[j]),probabilities=np.round(prob[j],6).tolist()) for j,sid in enumerate(c['sample_ids']) if sid in set(c.get('gallery_ids',[]))],
+            gallery=[dict(id=sid,y=int(y[j]),prediction=int(prob[j].argmax()),confidence=float(prob[j].max()),probabilities=np.round(prob[j],6).tolist()) for j,sid in enumerate(c['sample_ids']) if sid in set(c.get('gallery_ids',[]))],
             validation_loss=val_losses[m['id']],train_seconds=m.get('train_seconds'),
             inference_ms=m.get('inference_ms'),
             selective=[dict(coverage=float(k),accuracy=float((prob[np.argsort(-maxp,kind='stable')[:max(1,int(len(y)*k))]].argmax(axis=1)==y[np.argsort(-maxp,kind='stable')[:max(1,int(len(y)*k))]]).mean())) for k in np.linspace(.05,1,20)])

@@ -597,15 +597,15 @@
       .map((r) => {
         const rb = bm.get(r.id);
         if (!rb) return null;
-        const pa = r.probabilities.indexOf(Math.max(...r.probabilities)),
-          pb = rb.probabilities.indexOf(Math.max(...rb.probabilities));
+        const pa = r.prediction ?? r.probabilities.indexOf(Math.max(...r.probabilities)),
+          pb = rb.prediction ?? rb.probabilities.indexOf(Math.max(...rb.probabilities));
         return {
           ...r,
           b: rb.probabilities,
           pa,
           pb,
-          ca: Math.max(...r.probabilities),
-          cb: Math.max(...rb.probabilities),
+          ca: r.confidence ?? Math.max(...r.probabilities),
+          cb: rb.confidence ?? Math.max(...rb.probabilities),
         };
       })
       .filter(
