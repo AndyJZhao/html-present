@@ -5,6 +5,7 @@ import io
 import json
 import os
 import platform
+import shutil
 import subprocess
 from datetime import datetime, timezone
 import tarfile
@@ -45,7 +46,12 @@ def model_for(mid):
 def load_data():
     folder=ROOT/'datasets';folder.mkdir(exist_ok=True)
     archive=folder/'cifar-10-binary.tar.gz'
-    if not archive.exists():urllib.request.urlretrieve('https://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz',archive)
+    if not archive.exists():
+        partial=archive.with_suffix('.partial')
+        with urllib.request.urlopen('https://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz',timeout=120) as response, partial.open('wb') as f:
+            shutil.copyfileobj(response,f)
+        partial.replace(archive)
+    print(f'DATA_ARCHIVE_READY bytes={archive.stat().st_size}',flush=True)
     # Read the documented binary format directly; no unpickling or tar extraction.
     with tarfile.open(archive) as tf:
         def read(name):

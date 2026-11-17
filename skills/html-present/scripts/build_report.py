@@ -82,6 +82,7 @@ def validate_evaluation(d):
         if c['n'] != len(c['y']) or c['n'] != len(c['sample_ids']):
             raise ValueError('Cohort counts do not align')
         if len(set(c['sample_ids'])) != c['n']: raise ValueError('Duplicate sample IDs')
+        if any(type(v) is not int or not 0 <= v < len(c['classes']) for v in c['y']): raise ValueError('Invalid class labels')
         k = len(c['classes'])
         if sum(c['class_counts']) != c['n']: raise ValueError('Invalid class counts')
         mids = [m['id'] for m in c['models']]
@@ -90,8 +91,15 @@ def validate_evaluation(d):
         for m in c['models']:
             if len(m['multiclass']['cm']) != k or sum(map(sum,m['multiclass']['cm'])) != c['n']:
                 raise ValueError('Confusion matrix counts do not align')
-            if any(len(r['probabilities']) != k for r in m['gallery']):
-                raise ValueError('Gallery probabilities do not align')
+            sample_truth = dict(zip(c['sample_ids'], c['y']))
+            for r in m['gallery']:
+                p = r['probabilities']
+                if r['id'] not in sample_truth or r['y'] != sample_truth[r['id']] or len(p) != k:
+                    raise ValueError('Gallery records do not align')
+                if any(type(v) not in (int,float) or not math.isfinite(v) or not 0 <= v <= 1 for v in p) or abs(sum(p)-1)>1e-4:
+                    raise ValueError('Invalid gallery probability vector')
+                if c['kind']=='main' and r['id'] not in d.get('images',{}).get(c['eval_set'],{}):
+                    raise ValueError('Gallery image is missing')
     for t in d['tasks']:
         for ev in d['eval_sets']:
             for f in d['feature_sets']:

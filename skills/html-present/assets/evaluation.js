@@ -84,7 +84,7 @@
     id,
     rows,
     metrics,
-    { domain = [0, 1], baseline = [], ci = true } = {},
+    { domain = [0, 1], baseline = [], baselineLabel = "random", ci = true } = {},
   ) {
     const w = Math.max(1000, metrics.length * 185 + 200),
       left = 210,
@@ -106,7 +106,7 @@
         x = (v) => x0 + ((v - domain[0]) / (domain[1] - domain[0])) * (x1 - x0);
       s +=
         tx(x0, 24, name) +
-        tx(x0, 43, baseline[j] == null ? "" : `random ${fmt(baseline[j], 2)}`);
+        tx(x0, 43, baseline[j] == null ? "" : `${baselineLabel} ${fmt(baseline[j], 2)}`);
       for (let a = 0; a <= 4; a++) {
         const v = domain[0] + (a * (domain[1] - domain[0])) / 4;
         s +=
@@ -857,7 +857,7 @@
         ["own_spec", "Δ Own spec"],
         ["cap10", "Δ Top10 capture"],
       ],
-      { domain: [-maxDelta, maxDelta], baseline: [0, 0, 0, 0, 0, 0] },
+      { domain: [-maxDelta, maxDelta], baseline: [0, 0, 0, 0, 0, 0], baselineLabel: "no difference" },
     );
     dots(
       "multi-plot",
@@ -883,7 +883,7 @@
     ];
     table(
       "multi-table",
-      "10 项多分类指标；QWK 依赖任意类序，仅演示接口，不作结论",
+      "10 项多分类指标；列内深色表示较优。QWK 依赖任意类序，仅演示接口，不作结论",
       [
         "Model",
         "Macro AUROC",
