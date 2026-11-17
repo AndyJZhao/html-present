@@ -1,0 +1,24 @@
+{
+  "job_id": "11744133",
+  "partition": "long-cpu",
+  "python": "3.10.11",
+  "sklearn": "1.6.1",
+  "numpy": "2.2.6",
+  "git_revision": "c8f8109ddc84141964cb480fb25c59b904b53633",
+  "completed_at": "2026-11-17T02:44:35.978264+00:00",
+  "train_n": 6000,
+  "validation_n": 2000,
+  "test_n": 2000,
+  "seed": 17,
+  "slurm_result": {
+    "id": "11744133",
+    "state": "COMPLETED",
+    "elapsed": "00:03:30",
+    "exit_code": "0:0",
+    "successful": true,
+    "start_time_rfc3339": "2026-11-16T21:43:20-05:00",
+    "end_time_rfc3339": "2026-11-16T21:46:50-05:00"
+  },
+  "bootstrap": 500,
+  "evaluation_seed": 20261117
+}

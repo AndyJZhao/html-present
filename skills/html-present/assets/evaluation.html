@@ -264,6 +264,14 @@
         <p class="section-intro" id="gallery-note"></p>
         <div class="data-controls">
           <label
+            >图库模型 A
+            <select id="gallery-model-a"></select
+          ></label>
+          <label
+            >图库模型 B
+            <select id="gallery-model-b"></select
+          ></label>
+          <label
             >图像筛选
             <select id="gallery-mode">
               <option value="all">所有图库样本</option>
@@ -333,7 +341,7 @@
         <div id="adjusted-cm" class="two-col"></div>
         <h3>输出质量</h3>
         <p class="note">
-          predict_proba 质检与 LLM token / JSON
+          重复概率向量按小数点后 8 位计数。predict_proba 质检与 LLM token / JSON
           质检分开。没有对应输出时显示“不适用”，不会推测结果。
         </p>
         <div class="table-wrap" id="qc-table"></div>

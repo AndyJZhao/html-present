@@ -1,52 +1,47 @@
-# HTML Present acceptance
+# HTML Present acceptance — CIFAR-10
 
-final result: passed
+Result: passed for the tested interactive-report scope, 2026-11-17.
 
-Scope: functional and visual adaptation of the reference's interactive report format, using different data and Chinese content. Not a pixel-identical clone or reproduction of the original clinical analysis.
+The original Iris prototype did not cover predictive evaluation. The current default report implements the reference's evaluation modules and extends them to image classification. See [interaction inventory](docs/interaction-map.md) for explicit scope and substitutions. Iris remains a separate descriptive starter.
 
-## Evidence
+## Evidence and compute
 
-- Source: https://www.guopeiqi.com/projects/202611-ADRD_LLM/20261115_Progress_Report
-- Local source captures: `docs/source-desktop.jpg`, `docs/source-mobile.jpg` (excluded from public repository).
-- Local implementation captures: `docs/desktop-preview.jpg`, `docs/mobile-preview.jpg`, `docs/dark-preview.jpg` (excluded from public repository).
-- Desktop initially inspected at approximately 1265 × 712; mobile at a 390 × 844 override (375 CSS px content width with the browser scrollbar). Also checked a narrower desktop pane.
-- The browser's native screenshot surface and DOM viewport changed with the app pane during later capture. Captures were compared together for composition and styling, not treated as a pixel-normalized overlay. Screenshot dimensions are not evidence of exact geometric fidelity.
-- Full-view comparison: both use neutral report background, strong question heading, metadata, segmented sticky controls, section navigation and evidence cards. Different text lengths, Chinese system typography, four summary cards and shorter introduction are intentional.
-- Focused checks: mobile scatter, threshold panel, control wrapping and internal table overflow were inspected directly.
+- Reference: https://www.guopeiqi.com/projects/202611-ADRD_LLM/20261115_Progress_Report
+- Independent implementation: vanilla JS, SVG, embedded JSON/CSS/images; no copied reference scripts or research data.
+- Real training/evaluation: Mila `long-cpu`, job **11744133**, 2 CPUs / 4 GB, successful completion. Source revision, versions, split sizes and timestamps are in `examples/cifar/run.json`.
+- Five independent numerical tests passed on Mila: AUROC/AP/Brier against scikit-learn with tied scores; prior baseline and tie-invariant capacity; operating-point constraints/confusion counts; invalid probability rejection; identical-model paired bootstrap differences.
+- All 32 cohorts completed with 500 bootstrap draws. JSON structure, class/matrix totals, gallery IDs and train/validation separation checked after transfer. Clean/noise/blur share identical test IDs.
+- Main result: HOG MLP accuracy 50.45%, macro AUROC 0.8829; PCA MLP accuracy 40.20%, macro AUROC 0.8260. These are the 2,000-image sampled study, not full benchmark results.
 
-## Findings and correction history
+## Browser acceptance with real results
 
-1. P2: mobile page overflowed to 569px due to an unbroken dataset checksum. Fixed by wrapping provenance text. Recheck: document scrollWidth and clientWidth both 375px.
-2. P2: a desktop-sized scatter would shrink labels excessively on mobile. Fixed by computing the SVG viewBox from the available chart width; mobile viewBox 320 × 330. Rechecked readable labels and marks.
-3. Interpretation fix: static observation explicitly refers to the complete dataset; current subset size, means and correlations are computed live.
+Tested through the in-app browser at `http://127.0.0.1:4173/`, desktop viewport 1280 × 712 and mobile override 390 × 844. Mobile document client/scroll width both 375 CSS px (scrollbar excluded); dense figures and matrices scroll internally. Temporary viewport overrides were reset.
 
-No remaining P0/P1/P2 findings within this adaptation scope.
+- Task / evaluation / features: cat + HOG + subset yields n=500, positives=50 and gallery n=142; switching to noise restores n=2,000 / positives=200 and gallery n=500.
+- Ranking: model order and CI tooltips update. Cat/HOG/clean Logistic AUROC tooltip: 0.803, CI [0.774, 0.833]. AUROC and AUPRC axes use suitable ranges while retaining random baselines and all observed intervals.
+- Empty shared curve selection gives zero ROC curves, capacity rows and selective curves; all four chip groups agree. Restoring models restores the same selection across views.
+- Operating-point selection changes explanatory scope and values, including validation-fixed thresholds. Binary prior adjustment at 90%/10% changes Logistic accuracy from 90.4% to 73.8% and exposes the balanced-accuracy tradeoff.
+- Per-class cat table has n=200; undefined prior precision renders as a dash.
+- HOG/clean MLP confusion cell true cat → predicted dog has 29 full-cohort cases. Clicking it selects MLP as A and displays exactly 8 matching gallery records. CSV sample IDs match those 8 source records exactly.
+- Image dialog displays the true label and both models' full class probability vectors. Example `test-187`: true cat; MLP predicts dog at about 37.0%, forest predicts frog at about 18.9%.
+- Gallery A/B selectors synchronize with the probability/calibration selectors. MLP vs forest on noisy HOG inputs yields 221 disagreements among 500 gallery images; original/corrupted pairs render, with zero broken loaded images.
+- Metric CSV contains all five current models, correct cohort identifiers and numeric values matching the JSON.
+- Dark/light/auto theme and mobile layout inspected. Presentation mode shows only its active section; navigation advances ranking → operating, with correct 4/14 indicator.
+- Browser console: no warnings or errors during tested interactions. JavaScript syntax and skill metadata validation passed.
 
-## Required surfaces
+## Visual corrections
 
-- Typography: system fonts support Chinese offline; the reference's IBM Plex font is deliberately not redistributed. Hierarchy and compact labels retained.
-- Spacing: report width, generous section gaps, panel borders and compact controls follow the reference's document structure. Mobile controls wrap and navigation scrolls internally.
-- Colors: neutral gray background, white/dark panels, blue selected controls, consistent category colors across views.
-- Assets: no source image, logo or font copied; plots are generated from data. No decorative bitmap assets required.
-- Content: original Chinese text; public UCI Iris source, version caveat, units and exploratory interpretation shown.
+- Narrowed an unnecessarily broad ranking axis and reduced dot size so actual confidence intervals remain visible.
+- Removed desktop matrix overflow (570px minimum reduced to 530px; observed content/client width both 532px).
+- Added A/B model controls directly to the gallery, preserving shared state with calibration panels.
+- Preserved matrix values and image cards in print CSS despite hiding ordinary controls.
 
-## Verified behavior
+Screenshots, excluded from Git: `docs/cifar-ranking-preview.jpg`, `docs/cifar-gallery-preview.jpg`, `docs/cifar-mobile-preview.jpg`. Screenshots are visual evidence, not a pixel-identical comparison claim.
 
-- Scope changes 150 → 100 points and records; group filter gives 50; summary and table agree.
-- Feature switch changes scatter axes, means, correlation, distributions and threshold variable.
-- Empty selection: zero points/rows and undefined metrics as dashes.
-- Threshold 5.0cm for Virginica: TP 44, FN 6, FP 2, TN 98; recall 88.0%, specificity 98.0%, precision 95.7%. Independently recomputed from source CSV with Python standard library.
-- Default petal mean 3.7586666667 and Pearson r 0.9627570971 independently recomputed.
-- Target selector updates target counts and rule metrics.
-- Search Virginica: 50 records. Sort sepal length: first row #107 at 4.9cm. Downloaded CSV verified to contain those 50 rows in sorted order.
-- Point keyboard activation reveals sample #119 and all four values.
-- Light/dark switch; section navigation; presentation next/exit (only intended section visible).
-- Browser console: no warnings/errors observed during tested interactions.
-- JavaScript syntax and skill validator passed. Builder rejects duplicate IDs, nonfinite measurements and non-HTTP(S) source URLs; embedded script delimiters are escaped safely.
+## Explicit limits
 
-## Limits
-
-- Print stylesheet and before/after-print logic are implemented; an actual printed PDF was not visually inspected.
-- Offline delivery has no fetches, external fonts or external scripts. A direct file:// open was not separately browser-tested.
-- No model fitting, confidence intervals, inferential claims or held-out evaluation.
-- Tests are observations from this build, not a perpetual guarantee for future template changes.
+- Direct `file://` browser navigation was rejected by the browser protocol policy (HTTP/S only); no workaround was attempted. Runtime acceptance used the local HTTP preview. The artifact itself contains all scripts, styles, data and images and makes no runtime fetch/CDN calls.
+- Print styling is implemented; an exported/printed PDF was not visually inspected.
+- CIFAR images are 32×32 and intentionally enlarged without invented detail. Synthetic noise/blur are stress tests, not independently sampled external domains.
+- CI is conditional on fixed trained models; no retraining uncertainty. QWK has no natural ordinal meaning here. LLM token/JSON fields are N/A.
+- These checks describe this build, not future template changes.

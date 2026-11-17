@@ -87,6 +87,7 @@
     metrics,
     {
       domain = [0, 1],
+      domains = [],
       baseline = [],
       baselineLabel = "random",
       ci = true,
@@ -107,9 +108,10 @@
         tx(left - 18, y + 4, r.label, "end");
     });
     metrics.forEach(([key, name], j) => {
+      const range = domains[j] ?? domain;
       const x0 = left + j * pw,
         x1 = x0 + pw - 27,
-        x = (v) => x0 + ((v - domain[0]) / (domain[1] - domain[0])) * (x1 - x0);
+        x = (v) => x0 + ((v - range[0]) / (range[1] - range[0])) * (x1 - x0);
       s +=
         tx(x0, 24, name) +
         tx(
@@ -118,7 +120,7 @@
           baseline[j] == null ? "" : `${baselineLabel} ${fmt(baseline[j], 2)}`,
         );
       for (let a = 0; a <= 4; a++) {
-        const v = domain[0] + (a * (domain[1] - domain[0])) / 4;
+        const v = range[0] + (a * (range[1] - range[0])) / 4;
         s +=
           line(x(v), top, x(v), h - bottom) +
           tx(x(v), h - 17, fmt(v, 2), "middle");
@@ -147,7 +149,7 @@
             color(r.id),
             'stroke-width="2"',
           );
-        s += `<circle cx="${x(v)}" cy="${y}" r="5" fill="${color(r.id)}" stroke="var(--panel)" stroke-width="1.5" ${tip(t)}><title>${esc(t)}</title></circle>`;
+        s += `<circle cx="${x(v)}" cy="${y}" r="4" fill="${color(r.id)}" stroke="var(--panel)" stroke-width="1.5" ${tip(t)}><title>${esc(t)}</title></circle>`;
       });
     });
     svg(id, w, h, s, metrics.map((m) => m[1]).join(" / "));
@@ -809,7 +811,31 @@
         ["sens_at_spec", "Sens @ 90% spec"],
         ["spec_at_sens", "Spec @ 80% sens"],
       ],
-      { baseline: [0.5, c.prevalence, 0.1, 0.2] },
+      {
+        baseline: [0.5, c.prevalence, 0.1, 0.2],
+        domains: [
+          [
+            Math.min(...ranked.map((m) => m.ci.auroc[0] ?? m.auroc)) >= 0.4
+              ? 0.4
+              : 0,
+            1,
+          ],
+          [
+            0,
+            Math.min(
+              1,
+              Math.ceil(
+                (Math.max(
+                  c.prevalence,
+                  ...ranked.map((m) => m.ci.auprc[1] ?? m.auprc),
+                ) +
+                  0.02) *
+                  10,
+              ) / 10,
+            ),
+          ],
+        ],
+      },
     );
     renderCurves(c);
     renderOperating(c);
@@ -1057,6 +1083,8 @@
   options("binary-task", D.tasks, S.binary);
   options("model-a", first.models, S.a);
   options("model-b", first.models, S.b);
+  options("gallery-model-a", first.models, S.a);
+  options("gallery-model-b", first.models, S.b);
   options(
     "gallery-class",
     [
@@ -1087,9 +1115,15 @@
   for (const [id, key] of [
     ["model-a", "a"],
     ["model-b", "b"],
+    ["gallery-model-a", "a"],
+    ["gallery-model-b", "b"],
   ])
     $(id).addEventListener("change", (e) => {
       S[key] = e.target.value;
+      $("model-a").value = S.a;
+      $("gallery-model-a").value = S.a;
+      $("model-b").value = S.b;
+      $("gallery-model-b").value = S.b;
       S.cell = null;
       S.limit = 24;
       renderAB(cohort());
@@ -1146,6 +1180,7 @@
     if (b.dataset.cell) {
       S.a = b.dataset.model;
       $("model-a").value = S.a;
+      $("gallery-model-a").value = S.a;
       S.cell = b.dataset.cell.split(",").map(Number);
       S.mode = "all";
       S.truth = "all";

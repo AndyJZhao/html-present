@@ -18,6 +18,20 @@
 
 图库是预测前固定抽取的 500 张；统计基于完整当前评估集，界面标明不同分母。报告使用真实训练结果，不是模拟性能。Iris 描述性入门示例保留在 [`examples/iris/exploration.html`](examples/iris/exploration.html)。
 
+## 本次真实运行
+
+训练与 500 次 bootstrap 在 Mila 完成，记录见 [`examples/cifar/run.json`](examples/cifar/run.json)。以下为同一批 2,000 张干净测试图片的十分类准确率：
+
+| 模型 | RGB → PCA 64 | HOG 324 |
+| --- | ---: | ---: |
+| Logistic Regression | 38.20% | 48.85% |
+| Calibrated Linear SVM | 37.85% | 48.45% |
+| Random Forest | 41.40% | 47.55% |
+| MLP · 64 hidden units | 40.20% | 50.45% |
+| Training prior | 10.00% | 10.00% |
+
+这是为展示研究分析而设计的小规模固定配置实验，不代表完整 CIFAR-10 benchmark。HOG MLP 的宏平均 AUROC 为 0.8829；任务合并、阈值和图像条件会改变其他指标，详见交互报告。
+
 ## 安装 skill
 
 将 `skills/html-present` 复制到 `~/.codex/skills/html-present`。已有同名目录时先比较自定义内容。新会话中使用：

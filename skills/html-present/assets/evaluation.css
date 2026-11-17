@@ -62,7 +62,7 @@
 .cm-table {
   font-size: 11px;
   table-layout: fixed;
-  min-width: 570px;
+  min-width: 530px;
 }
 .cm-table th,
 .cm-table td {
@@ -278,7 +278,7 @@ dialog::backdrop {
     min-width: 350px;
   }
   .cm-table {
-    min-width: 570px;
+    min-width: 530px;
   }
   .cm-table.binary {
     min-width: 280px;
