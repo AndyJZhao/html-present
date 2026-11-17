@@ -1,34 +1,35 @@
 ---
 name: html-present
-description: Create interactive, narrative HTML research reports with linked controls, evidence plots, data tables, and methods. Use for HTML Present, interactive progress reports, or explorable analysis presentations; not for slide decks or general web apps.
+description: Create interactive HTML research reports with linked model evaluation plots, confidence intervals, data tables and image comparisons. Use for HTML Present, interactive ML progress reports or explorable research presentations; not general web apps or slide decks.
 ---
 
 # HTML Present
 
-Turn research evidence into an explorable report: a clear question, a concise answer, linked views that let readers test the answer, and visible methods. The bundled example is a descriptive Iris study; its topic and section count are not requirements for every report.
+Build a research narrative whose evidence readers can explore. Use one shared state for task, evaluation cohort, features and model selections; name local exceptions and each panel's denominator. Reference pages are interaction specifications, not screenshots to flatten into static images.
 
-## Choose the evidence and interactions
+## Select the artifact route
 
-Use supplied results and data first. Identify what changes together (task, cohort, feature set, model selection, threshold), what stays fixed, and the denominator for each metric. Inspect a supplied reference in the browser to understand the actual interaction, not just its appearance. Reproduce general interaction patterns in original code; do not assume source code, fonts, images, or research data are licensed for redistribution.
+- **Model evaluation:** read [evaluation contract](references/evaluation-contract.md). The bundled evaluator converts aligned held-out probabilities into ROC/PR, bootstrap intervals, operating points, capacity, decision curves, calibration, paired differences, multiclass/per-class results and optional image examples. The evaluation template adds linked model choices, image A/B comparison, confusion-cell filtering, corruption and selective-prediction views. Adapt task-specific panels when evidence is unavailable; don't require unrelated datasets just to populate every section.
+- **Descriptive numeric data:** read [table contract](references/data-contract.md). The simpler starter supports up to three categories, scatter/distributions, exploratory measurement thresholds, searchable/sortable rows and CSV export. It does not substitute for a predictive evaluation report.
 
-Lead with the research question and data-backed findings. Prefer a compact sticky control bar, anchor navigation, summary cards, chart-plus-explanation sections, accessible tables, and methods near the results. Use restrained neutral backgrounds, high-contrast type, and consistent series colors. Preserve the user's existing design where appropriate. Dark/light themes and narrow-screen usability should work across charts and controls.
-
-Define one shared report state and derive charts, tables, counts, and narrative from it. Explain any deliberately local controls. Distinguish sample dispersion from uncertainty, exploratory thresholds from held-out evaluation, measured results from illustrative data. Never invent model metrics to fill a template. Analysis or model training follows the user's execution environment rules; rendering an existing artifact does not require a training job.
-
-## Use or adapt the starter
-
-For a small numeric table with one categorical label, read [the data contract](references/data-contract.md). Prepare JSON and run:
+Both use the same build command, with automatic routing by schema:
 
 ```sh
 python3 <skill-dir>/scripts/build_report.py report.json report.html
 ```
 
-The builder validates records and produces one offline HTML with embedded CSS, JavaScript, and data. No CDN, network fetch, or package installation is needed. The starter supports up to three groups, paired feature views, global scope/group filtering, descriptive statistics, an exploratory binary measurement threshold, sortable/searchable records, CSV export, themes, print, and section-by-section presentation mode.
+The result is one offline HTML containing data, CSS, vanilla JavaScript and SVG; no CDN or runtime server. Copy/edit template assets in the project for other layouts. Preserve the original skill when task-specific changes should not affect future reports.
 
-For different research tasks, adapt `assets/report.html`, `report.css`, and `report.js` in the project, rather than forcing results into the Iris sections. These are editable starting points, not a universal report schema. Add model selectors, ROC/calibration/capacity views or confidence intervals only when corresponding evidence exists. Preserve a single state model and visible metric definitions. For large datasets, use aggregates and bounded detail views; avoid embedding private or unnecessary raw records.
+## Evidence and comparison rules
 
-## Verify the experience
+Use real supplied results first. Training and analysis follow the user's compute boundary; the builder itself is standard-library artifact rendering. Never synthesize performance claims to fill a chart. Preserve train/validation/test separation and aligned sample IDs across models. Distinguish multiclass probabilities merged into a binary task from models directly trained for that task.
 
-Open the generated report in an available browser, and verify real rendered behavior. Exercise every dimension at least once and check that counts, chart marks, tables and statements agree. Check an empty selection, missing/undefined metric behavior, keyboard focus, theme switching, desktop and approximately 390px mobile width. Check sort/search/export against the visible table. Verify presentation navigation and printable content when included. Report console errors or any verification limits honestly; HTTP success alone is not UI verification.
+State the bootstrap unit, pairing, strata, number of draws, and whether training uncertainty is included. Test-selected operating points are exploratory; validation-fixed thresholds are a separate view. Do not silently label average precision as trapezoidal PR area. Undefined PPV, unstable calibration fits and unavailable metrics display as missing, not zero. Paired comparisons need paired predictions and a documented reference-selection rule.
 
-Maintain source provenance, units, scope, build commands, and interpretation limits alongside the artifact. Include a useful local preview or hosted link in the handoff. A public repository, push, or website deployment requires task-specific authorization; skill invocation is not publication permission. Review exact files before publishing and keep private records and credentials out of deliverables.
+Preselect bounded image examples independently of model outcomes, then expose error/disagreement filters. Show gallery size separately from the full metric cohort. Keep class order and image IDs consistent; label synthetic corruptions as synthetic. Only embed images authorized for the artifact's audience. LLM token/JSON QC applies only when real output evidence exists.
+
+## Verify and package
+
+Exercise the rendered report in a browser: all global controls, shared model chips, empty selection, local A/B and class controls, matrix-to-image navigation, gallery filters/dialog, exports, theme, keyboard, narrow screen, presentation and print. Check displayed counts and numeric values against the source artifact. Pure HTTP success is not acceptance.
+
+Include scope labels, source provenance, methods, limits, build commands and a useful preview. Inspect file size and bound detail views. Do not claim complete reference parity based on similar styling: compare each source interaction and record any deliberate substitutions. Skill invocation does not authorize public repository writes or website deployment; use the user's actual repository/action authorization.

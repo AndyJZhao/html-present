@@ -4,6 +4,9 @@ import base64
 import io
 import json
 import os
+import platform
+import subprocess
+from datetime import datetime, timezone
 import tarfile
 import time
 import urllib.request
@@ -134,7 +137,7 @@ def main():
                         train_prior=(np.bincount(train_y,minlength=len(classes))/len(train_y)).tolist(),gallery_ids=sorted(gallery_ids),models=[])
                     for mid,label,family in MODELS:
                         vp,ps,seconds=pool[mid];p,ms=ps[ev]
-                        c['models'].append(dict(id=mid,label=label,family=family,probabilities=p.tolist(),validation_probabilities=vp.tolist(),validation_y=val_y.tolist(),train_seconds=seconds,inference_ms=ms))
+                        c['models'].append(dict(id=mid,label=label,family=family,probabilities=p.tolist(),validation_probabilities=vp.tolist(),validation_y=val_y.tolist(),validation_ids=[f'train-{i}' for i in val],train_seconds=seconds,inference_ms=ms))
                     out['cohorts'].append(c)
     for mid in ['logistic','forest']:
         for k in [16,32,64]:
@@ -142,6 +145,7 @@ def main():
             out['feature_sweep'].append(dict(model=mid,label=next(m[1] for m in MODELS if m[0]==mid),family=next(m[2] for m in MODELS if m[0]==mid),k=k,eval_set='test',macro_auroc=float(roc_auc_score(labels_by['test'],p,multi_class='ovr',average='macro'))))
     dest=ROOT/'outputs/cifar';dest.mkdir(parents=True,exist_ok=True)
     (dest/'predictions.json').write_text(json.dumps(out,ensure_ascii=False,separators=(',',':'))+'\n')
+    (dest/'run.json').write_text(json.dumps(dict(job_id=os.environ['SLURM_JOB_ID'],partition=os.environ.get('SLURM_JOB_PARTITION'),python=platform.python_version(),sklearn=sklearn.__version__,numpy=np.__version__,git_revision=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),completed_at=datetime.now(timezone.utc).isoformat(),train_n=len(train),validation_n=len(val),test_n=len(test),seed=17),indent=2)+'\n')
     (dest/'splits.json').write_text(json.dumps(dict(train=train.tolist(),validation=val.tolist(),test=test.tolist(),gallery=sorted(gallery)),indent=2)+'\n')
     print(f'TRAINING_COMPLETE {dest} cohorts={len(out["cohorts"])}',flush=True)
 

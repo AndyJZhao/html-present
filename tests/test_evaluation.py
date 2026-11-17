@@ -34,7 +34,7 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(r['ops']['validation']['tp'],1)
         self.assertEqual(r['ops']['validation']['fp'],0)
     def test_reject_misaligned_probabilities(self):
-        c=dict(y=[0,1],sample_ids=['a','b'],classes=['a','b'],positive_classes=[1],train_prior=[.5,.5],models=[dict(id='m',probabilities=[[.6,.6],[.4,.6]],validation_y=[0,1],validation_probabilities=[[.6,.4],[.4,.6]])])
+        c=dict(y=[0,1],sample_ids=['a','b'],classes=['a','b'],positive_classes=[1],train_prior=[.5,.5],models=[dict(id='m',family='Linear',probabilities=[[.6,.6],[.4,.6]],validation_y=[0,1],validation_probabilities=[[.6,.4],[.4,.6]])])
         with self.assertRaises(ValueError):e.validate_cohort(c)
     def test_paired_identical_models(self):
         y=[0,0,0,1,1,1];p=[[.8,.2],[.6,.4],[.4,.6],[.2,.8],[.3,.7],[.55,.45]]

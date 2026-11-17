@@ -138,6 +138,7 @@ def calibration(y,p):
 
 
 def validate_cohort(c):
+    if not c['y'] or any(type(v) is not int for v in c['y']):raise ValueError('Labels must be integer class indices')
     y=np.array(c['y'],dtype=int); k=len(c['classes'])
     if len(y)!=len(c['sample_ids']) or len(set(c['sample_ids']))!=len(y):raise ValueError('Sample IDs must be unique and aligned')
     if set(y)!=set(range(k)):raise ValueError('Every cohort must contain every class for the provided metrics')
@@ -145,8 +146,14 @@ def validate_cohort(c):
     prior=np.asarray(c['train_prior'],dtype=float)
     if len(prior)!=k or np.any(prior<=0) or not np.isclose(prior.sum(),1):raise ValueError('Invalid training prior')
     ids=[]
+    if not c['models'] or all(m['family']=='Baseline' for m in c['models']):raise ValueError('At least one non-baseline model is required')
+    validation_labels=c['models'][0]['validation_y']
+    validation_ids=c['models'][0].get('validation_ids')
     for m in c['models']:
         ids.append(m['id'])
+        if m['validation_y']!=validation_labels or m.get('validation_ids')!=validation_ids:raise ValueError('Validation records must align across models')
+        if set(m['validation_y'])!=set(range(k)):raise ValueError('Validation must contain every class')
+        if validation_ids is not None and (len(validation_ids)!=len(validation_labels) or len(set(validation_ids))!=len(validation_ids)):raise ValueError('Invalid validation sample IDs')
         for key,labels in [('probabilities',y),('validation_probabilities',m['validation_y'])]:
             p=np.asarray(m[key],dtype=float)
             if p.shape!=(len(labels),k) or not np.isfinite(p).all() or np.any(p<0) or np.any(p>1) or not np.allclose(p.sum(axis=1),1):raise ValueError('Invalid probability array')

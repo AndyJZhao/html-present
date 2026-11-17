@@ -1,19 +1,29 @@
-# Reference → reusable interaction pattern
+# Interactive evaluation inventory
 
-Reference inspected in a browser on 2026-11-17:
-https://www.guopeiqi.com/projects/202611-ADRD_LLM/20261115_Progress_Report
+The reference's analytical interaction patterns are implemented in independent HTML/JS/SVG. The demo changes the domain to CIFAR-10, with actual lightweight models and precomputed held-out results. Visual primitives are adapted where useful rather than copying the original source.
 
-| Observed reference behavior | Iris adaptation |
-| --- | --- |
-| Question-led opening and metadata | Research question, dataset size, provenance, report date |
-| Sticky task / test set / feature controls | Sticky cohort / feature-pair controls |
-| Summary changes when task changes | Counts, means and correlation follow shared state |
-| Model chips shared between analytical charts | Category chips shared by plots, statistics, rule and records |
-| Estimate plots beside explicit definitions | Mean ± sample SD with definition and numeric table |
-| Operating-point comparisons | Measurement threshold slider and live confusion matrix |
-| Anchor navigation, light / dark / auto | Same patterns, implemented independently |
-| Detailed methods and appendices | Expandable methods, limitations and attribution |
+| Reference module | Implementation | Scope |
+| --- | --- | --- |
+| Summary / definitions / class mix | Derived cards, narrative, glossary and proportions | All global controls |
+| AUROC / AUPRC / fixed-spec / fixed-sens | Four-column dot-and-CI plot, sorted AUROC, random baselines | All models, current cohort |
+| ROC + own markers | Curves and markers; point tooltip, keyboard focus | Shared selected models |
+| Capacity + top-k table | Random/perfect baselines, fractional ties, 5/10/20% | Shared selected models |
+| Decision curves | Risk threshold vs fixed own; all/none strategies | Shared selected models |
+| Operating point | Four rules, values, per-1000 consequences | Local rule; global cohort |
+| Own comparison / confusion matrices | CI metrics; separate model chips; row-normalized cells | Global cohort |
+| Calibration / probability distributions | Brier, BSS, slope/intercept, class-conditioned distributions, bins | A/B selectors; global cohort |
+| Overconfidence | max class probability > 99% | Global cohort |
+| Paired comparison | Six paired differences and CI; validation-selected reference | Global cohort |
+| Multiclass | Four CI panels, ten-metric table | Full 10-class predictions |
+| Per class | Recall, precision, F1, AUROC chart and six-metric table | Local class |
+| Feature-count study | PCA 16/32/64, two algorithms | Fixed clean full test; labelled |
+| Direct binary appendix | Independently trained binary model metrics / matrices | Local task, global evaluation/features |
+| Prior adjustment | Dividing by training prior before argmax | Global main cohort |
+| Output QC | Probability validity/repetition/confidence/ties | Global cohort; LLM fields N/A |
+| Methods | Splits, assumptions, sources, uncertainty, limitations | Static provenance |
 
-Added for reusable delivery: a dependency-free single-file builder, searchable/sortable CSV evidence, mobile chart layout, print styles and section presentation mode.
+Added image-classification interactions: Precision–Recall curves; confusion-cell → image filtering; A/B disagreement and correct/incorrect filters; per-image full probability dialog; original/corrupted image pairs; coverage/accuracy curve; paired-ID corruption comparison; runtime costs; CSV; themes; presentation; print.
 
-This reproduces an interaction format, not the original clinical analysis. It does not implement the original model-specific ROC, calibration, decision-curve or bootstrap analyses, because the Iris example contains measurements rather than prediction artifacts. Those can be added when actual evidence is supplied.
+Differences are explicit: summary, calibration and paired plots follow the current global cohort here, while the reference freezes some panels to its common subset/top-100. The image gallery is a preselected subset, never the metric denominator. Curves can be thinned to 250 coordinates for file size; metrics/CI use full predictions. This study does not produce LLM token evidence, clinical recommendations, segmentation or detection results. No fake placeholders stand in for those tasks.
+
+Metric-table shading is columnwise (direction inverted for loss/Brier/ECE), not a shared scale across incompatible metrics. The per-class chart is a recall/precision butterfly; the operating chart stacks captured targets, false alarms and missed targets per 1,000. Undefined precision remains missing. Print preserves matrix values and rendered image cards even though ordinary controls are hidden.

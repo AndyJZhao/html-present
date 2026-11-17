@@ -21,3 +21,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 The Iris dataset is separately licensed under CC BY 4.0; see README.md.
+CIFAR-10 image excerpts remain subject to the original dataset's rights and terms;
+the MIT license does not relicense those images. See README.md and the report source.
