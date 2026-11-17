@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>__TITLE__</title>
+    <style>
+      __CSS__
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#summary">跳到报告正文</a>
+    <header class="hero wrap">
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 id="title"></h1>
+      <p class="intro" id="intro"></p>
+      <div class="meta" id="meta"></div>
+    </header>
+    <div class="toolbar" id="toolbar">
+      <div class="wrap">
+        <div class="controls">
+          <div class="control">
+            <span>研究范围</span>
+            <div
+              class="seg"
+              id="scope"
+              role="group"
+              aria-label="研究范围"
+            ></div>
+          </div>
+          <div class="control">
+            <span>特征</span>
+            <div class="seg" id="view" role="group" aria-label="特征"></div>
+          </div>
+          <div class="control">
+            <span>主题</span>
+            <div class="seg" id="theme" role="group" aria-label="主题">
+              <button data-value="auto" aria-pressed="true">自动</button
+              ><button data-value="light" aria-pressed="false">浅色</button
+              ><button data-value="dark" aria-pressed="false">深色</button>
+            </div>
+          </div>
+          <button id="present" aria-pressed="false">演示模式</button
+          ><button id="print">打印 / PDF</button>
+        </div>
+        <nav aria-label="报告目录">
+          <a href="#summary">摘要</a><a href="#labels">如何阅读</a
+          ><a href="#explore">数据空间</a><a href="#distribution">特征比较</a
+          ><a href="#threshold">阈值探索</a><a href="#data">数据明细</a
+          ><a href="#methods">方法与来源</a>
+        </nav>
+      </div>
+    </div>
+    <main class="wrap">
+      <section id="summary">
+        <div class="eyebrow">SUMMARY · 01</div>
+        <h2>先看结论，再探索证据</h2>
+        <p class="section-intro">
+          卡片和结论随顶部条件实时更新。所有数字来自当前选中的记录。
+        </p>
+        <div class="cards" id="cards" aria-live="polite"></div>
+        <div class="finding" id="findings"></div>
+      </section>
+      <section id="labels">
+        <div class="eyebrow">READ THIS FIRST · 02</div>
+        <h2>这份报告回答什么？</h2>
+        <div class="reading-grid">
+          <div>
+            <h3>研究问题</h3>
+            <p id="question"></p>
+            <h3>如何交互</h3>
+            <p>
+              切换研究范围和特征；点击类别标签可以在整份报告中筛选。图中每个点是一条记录，鼠标悬停、点击或键盘聚焦可查看数值。
+            </p>
+          </div>
+          <dl>
+            <dt>相关系数 r</dt>
+            <dd>当前两项特征的 Pearson 相关，范围 −1 到 1；相关不等于因果。</dd>
+            <dt>均值 ± 标准差</dt>
+            <dd>描述样本的中心与离散程度，不是置信区间。</dd>
+            <dt>阈值规则</dt>
+            <dd>
+              将当前横轴特征 ≥
+              阈值的记录标记为目标类别。只演示取舍，不是训练或泛化评估。
+            </dd>
+          </dl>
+        </div>
+      </section>
+      <section id="explore">
+        <div class="eyebrow">FEATURE SPACE · 03</div>
+        <h2>哪些样本自然分开，哪些仍然重叠？</h2>
+        <p class="section-intro">
+          比较同一批样本的两项特征。类别筛选与下面的统计和阈值分析共享。
+        </p>
+        <div
+          class="chips"
+          id="category-chips"
+          role="group"
+          aria-label="类别筛选"
+        ></div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3 id="scatter-title"></h3>
+            <span id="scatter-count"></span>
+          </div>
+          <div id="scatter" class="chart"></div>
+          <p class="point-detail" id="point-detail" aria-live="polite">
+            悬停或选择一个点，查看原始测量值。
+          </p>
+        </div>
+      </section>
+      <section id="distribution">
+        <div class="eyebrow">GROUP COMPARISON · 04</div>
+        <h2>差异有多大？</h2>
+        <p class="section-intro">
+          圆点是均值，横线是 ±1 个样本标准差。两张图使用各自的测量尺度。
+        </p>
+        <div class="two-col" id="distributions"></div>
+        <div class="table-wrap">
+          <table id="stats-table">
+            <caption>
+              当前样本的分组描述统计
+            </caption>
+          </table>
+        </div>
+      </section>
+      <section id="threshold">
+        <div class="eyebrow">EXPLORE A DECISION · 05</div>
+        <h2>移动阈值，观察误报和漏报</h2>
+        <p class="section-intro">
+          这是对当前样本的描述性规则探索。阈值在同一批数据上调整，不能将此结果当作独立测试性能。
+        </p>
+        <div class="panel">
+          <div class="threshold-controls">
+            <label
+              >目标类别
+              <select id="target"></select></label
+            ><label class="slider-label"
+              ><span id="threshold-label"></span
+              ><input
+                id="cutoff"
+                type="range"
+                aria-label="分类阈值"
+                step="0.1" /></label
+            ><output id="cutoff-output" for="cutoff"></output>
+          </div>
+          <div class="two-col">
+            <div>
+              <h3>真实类别 × 规则预测</h3>
+              <div id="matrix"></div>
+            </div>
+            <div>
+              <h3>当前规则的取舍</h3>
+              <div id="threshold-metrics" aria-live="polite"></div>
+            </div>
+          </div>
+          <p class="note" id="threshold-note"></p>
+        </div>
+      </section>
+      <section id="data">
+        <div class="eyebrow">OPEN THE EVIDENCE · 06</div>
+        <h2>回到每一条记录</h2>
+        <div class="data-controls">
+          <label
+            >查找记录
+            <input type="search" id="search" placeholder="编号或类别" /></label
+          ><button id="download">下载当前 CSV</button
+          ><button id="reset">重置筛选</button
+          ><span id="row-count" aria-live="polite"></span>
+        </div>
+        <p class="note">
+          搜索仅作用于明细表与
+          CSV；顶部条件和类别筛选作用于整份报告。点击列标题排序。
+        </p>
+        <div class="table-wrap">
+          <table id="raw-table">
+            <caption>
+              当前筛选后的原始数据
+            </caption>
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section id="methods">
+        <div class="eyebrow">METHODS & PROVENANCE · 07</div>
+        <h2>可追溯，也可复用</h2>
+        <details open>
+          <summary>数据与计算方法</summary>
+          <div id="method-content"></div>
+        </details>
+        <details>
+          <summary>局限与解读边界</summary>
+          <ul id="limitations"></ul>
+        </details>
+        <details>
+          <summary>展示形式与致谢</summary>
+          <p>
+            交互研究报告的形式参考
+            <a
+              href="https://www.guopeiqi.com/projects/202611-ADRD_LLM/20261115_Progress_Report"
+              target="_blank"
+              rel="noopener"
+              >Peiqi Guo 的 NHATS Progress Report</a
+            >：问题驱动叙事、固定控制栏、全局联动、图表与方法并置。本页为独立实现，未复制原报告的代码、研究数据或素材。
+          </p>
+          <p>
+            由 HTML Present 生成。一个 HTML 文件即可离线打开；无需服务器或 CDN。
+          </p>
+        </details>
+      </section>
+    </main>
+    <footer class="wrap">
+      <span>HTML PRESENT · 可交互研究汇报</span
+      ><span id="footer-context"></span>
+    </footer>
+    <div class="present-nav" hidden>
+      <button id="prev" aria-label="上一节">上一节</button
+      ><span id="page-number"></span
+      ><button id="next" aria-label="下一节">下一节</button
+      ><button id="exit">退出演示</button>
+    </div>
+    <script id="report-data" type="application/json">
+      __DATA__
+    </script>
+    <script>
+      __JS__;
+    </script>
+  </body>
+</html>

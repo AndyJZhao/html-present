@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML Present"
+  short_description: "Build interactive research reports with linked evidence"
+  default_prompt: "Use $html-present to turn my analysis into an interactive HTML research report with linked charts, clear findings, and traceable methods."

@@ -1,0 +1,1300 @@
+{
+  "title": "四项测量，能把三种鸢尾花分开吗？",
+  "eyebrow": "IRIS STUDY · INTERACTIVE RESEARCH REPORT · HTML PRESENT",
+  "intro": "从 150 朵鸢尾花出发，比较花萼与花瓣的长度和宽度。先看数据中自然出现的分组，再改变观察范围、筛选物种，最后用一个可移动的阈值理解分类中的误报与漏报。每一个结论，都可以回到图表和原始记录中检查。",
+  "question": "花瓣和花萼，哪一组测量更容易区分物种？当只观察外形更接近的 versicolor 与 virginica 时，重叠会怎样变化？一条简单的测量阈值，又会遗漏哪些样本？",
+  "datasetName": "UCI Iris · 公开数据 · 描述性探索",
+  "date": "2026-11-17",
+  "columns": [
+    {
+      "key": "sepal_length",
+      "label": "花萼长度",
+      "unit": "cm"
+    },
+    {
+      "key": "sepal_width",
+      "label": "花萼宽度",
+      "unit": "cm"
+    },
+    {
+      "key": "petal_length",
+      "label": "花瓣长度",
+      "unit": "cm"
+    },
+    {
+      "key": "petal_width",
+      "label": "花瓣宽度",
+      "unit": "cm"
+    }
+  ],
+  "categories": [
+    {
+      "id": "setosa",
+      "label": "Setosa",
+      "color": "#287f8a"
+    },
+    {
+      "id": "versicolor",
+      "label": "Versicolor",
+      "color": "#bb702b"
+    },
+    {
+      "id": "virginica",
+      "label": "Virginica",
+      "color": "#7c6db0"
+    }
+  ],
+  "scopes": [
+    {
+      "label": "全部三类",
+      "categories": [
+        "setosa",
+        "versicolor",
+        "virginica"
+      ]
+    },
+    {
+      "label": "相近两类",
+      "categories": [
+        "versicolor",
+        "virginica"
+      ]
+    }
+  ],
+  "views": [
+    {
+      "label": "花瓣",
+      "x": "petal_length",
+      "y": "petal_width",
+      "observation": "花瓣视图中，Setosa 在较短、较窄的一端形成独立簇；Versicolor 与 Virginica 在边界附近仍有重叠。"
+    },
+    {
+      "label": "花萼",
+      "x": "sepal_length",
+      "y": "sepal_width",
+      "observation": "花萼视图中，多类样本的测量范围发生重叠；单看两项花萼测量，很难找到完全无误的分界。"
+    }
+  ],
+  "target": "virginica",
+  "source": {
+    "url": "https://archive.ics.uci.edu/dataset/53/iris",
+    "citation": "Fisher, R. (1936). Iris [Dataset]. UCI Machine Learning Repository. DOI: 10.24432/C56C76",
+    "license": "CC BY 4.0",
+    "note": "使用 UCI 下载包中的 iris.data 原始版本；未采用 Kaggle 镜像。UCI 指出该版本第 35、38 条记录与 Fisher 原文有差异，本示例保留下载值，不静默修正。原始文件 SHA-256: 6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0"
+  },
+  "methods": [
+    "150 条记录，每个类别 50 条；4 项测量，单位为厘米。下载日期：2026-11-17。",
+    "数据按源文件顺序编号 1–150；原文件无缺失值。除解析数值和去除类别名前缀外，不修改测量值。",
+    "研究范围决定可用记录，类别按钮进一步筛选；所有图表和摘要采用同一筛选。特征切换同时更新两轴、统计与阈值变量。",
+    "分布图展示均值 ±1 个样本标准差，不是置信区间，也不是显著性检验。类别之间的相关结构可能影响汇总相关。",
+    "阈值规则：当前横轴测量 ≥ 阈值时预测为目标类别，其余预测为其他类。没有训练集、验证集或测试集划分。"
+  ],
+  "limitations": [
+    "这是一个小型、经典教学数据集，不代表真实部署中的样本多样性。",
+    "交互中调节阈值后得到的指标是同样本描述，不能解释为模型的泛化性能。",
+    "散点可能重叠；同坐标的记录可以通过下方原始数据表检查。",
+    "过滤到单一类别时，部分指标分母为零，显示 —；样本量不足或特征为常数时，相关系数同样显示 —。"
+  ],
+  "rows": [
+    {
+      "id": 1,
+      "sepal_length": 5.1,
+      "sepal_width": 3.5,
+      "petal_length": 1.4,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 2,
+      "sepal_length": 4.9,
+      "sepal_width": 3.0,
+      "petal_length": 1.4,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 3,
+      "sepal_length": 4.7,
+      "sepal_width": 3.2,
+      "petal_length": 1.3,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 4,
+      "sepal_length": 4.6,
+      "sepal_width": 3.1,
+      "petal_length": 1.5,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 5,
+      "sepal_length": 5.0,
+      "sepal_width": 3.6,
+      "petal_length": 1.4,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 6,
+      "sepal_length": 5.4,
+      "sepal_width": 3.9,
+      "petal_length": 1.7,
+      "petal_width": 0.4,
+      "category": "setosa"
+    },
+    {
+      "id": 7,
+      "sepal_length": 4.6,
+      "sepal_width": 3.4,
+      "petal_length": 1.4,
+      "petal_width": 0.3,
+      "category": "setosa"
+    },
+    {
+      "id": 8,
+      "sepal_length": 5.0,
+      "sepal_width": 3.4,
+      "petal_length": 1.5,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 9,
+      "sepal_length": 4.4,
+      "sepal_width": 2.9,
+      "petal_length": 1.4,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 10,
+      "sepal_length": 4.9,
+      "sepal_width": 3.1,
+      "petal_length": 1.5,
+      "petal_width": 0.1,
+      "category": "setosa"
+    },
+    {
+      "id": 11,
+      "sepal_length": 5.4,
+      "sepal_width": 3.7,
+      "petal_length": 1.5,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 12,
+      "sepal_length": 4.8,
+      "sepal_width": 3.4,
+      "petal_length": 1.6,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 13,
+      "sepal_length": 4.8,
+      "sepal_width": 3.0,
+      "petal_length": 1.4,
+      "petal_width": 0.1,
+      "category": "setosa"
+    },
+    {
+      "id": 14,
+      "sepal_length": 4.3,
+      "sepal_width": 3.0,
+      "petal_length": 1.1,
+      "petal_width": 0.1,
+      "category": "setosa"
+    },
+    {
+      "id": 15,
+      "sepal_length": 5.8,
+      "sepal_width": 4.0,
+      "petal_length": 1.2,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 16,
+      "sepal_length": 5.7,
+      "sepal_width": 4.4,
+      "petal_length": 1.5,
+      "petal_width": 0.4,
+      "category": "setosa"
+    },
+    {
+      "id": 17,
+      "sepal_length": 5.4,
+      "sepal_width": 3.9,
+      "petal_length": 1.3,
+      "petal_width": 0.4,
+      "category": "setosa"
+    },
+    {
+      "id": 18,
+      "sepal_length": 5.1,
+      "sepal_width": 3.5,
+      "petal_length": 1.4,
+      "petal_width": 0.3,
+      "category": "setosa"
+    },
+    {
+      "id": 19,
+      "sepal_length": 5.7,
+      "sepal_width": 3.8,
+      "petal_length": 1.7,
+      "petal_width": 0.3,
+      "category": "setosa"
+    },
+    {
+      "id": 20,
+      "sepal_length": 5.1,
+      "sepal_width": 3.8,
+      "petal_length": 1.5,
+      "petal_width": 0.3,
+      "category": "setosa"
+    },
+    {
+      "id": 21,
+      "sepal_length": 5.4,
+      "sepal_width": 3.4,
+      "petal_length": 1.7,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 22,
+      "sepal_length": 5.1,
+      "sepal_width": 3.7,
+      "petal_length": 1.5,
+      "petal_width": 0.4,
+      "category": "setosa"
+    },
+    {
+      "id": 23,
+      "sepal_length": 4.6,
+      "sepal_width": 3.6,
+      "petal_length": 1.0,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 24,
+      "sepal_length": 5.1,
+      "sepal_width": 3.3,
+      "petal_length": 1.7,
+      "petal_width": 0.5,
+      "category": "setosa"
+    },
+    {
+      "id": 25,
+      "sepal_length": 4.8,
+      "sepal_width": 3.4,
+      "petal_length": 1.9,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 26,
+      "sepal_length": 5.0,
+      "sepal_width": 3.0,
+      "petal_length": 1.6,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 27,
+      "sepal_length": 5.0,
+      "sepal_width": 3.4,
+      "petal_length": 1.6,
+      "petal_width": 0.4,
+      "category": "setosa"
+    },
+    {
+      "id": 28,
+      "sepal_length": 5.2,
+      "sepal_width": 3.5,
+      "petal_length": 1.5,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 29,
+      "sepal_length": 5.2,
+      "sepal_width": 3.4,
+      "petal_length": 1.4,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 30,
+      "sepal_length": 4.7,
+      "sepal_width": 3.2,
+      "petal_length": 1.6,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 31,
+      "sepal_length": 4.8,
+      "sepal_width": 3.1,
+      "petal_length": 1.6,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 32,
+      "sepal_length": 5.4,
+      "sepal_width": 3.4,
+      "petal_length": 1.5,
+      "petal_width": 0.4,
+      "category": "setosa"
+    },
+    {
+      "id": 33,
+      "sepal_length": 5.2,
+      "sepal_width": 4.1,
+      "petal_length": 1.5,
+      "petal_width": 0.1,
+      "category": "setosa"
+    },
+    {
+      "id": 34,
+      "sepal_length": 5.5,
+      "sepal_width": 4.2,
+      "petal_length": 1.4,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 35,
+      "sepal_length": 4.9,
+      "sepal_width": 3.1,
+      "petal_length": 1.5,
+      "petal_width": 0.1,
+      "category": "setosa"
+    },
+    {
+      "id": 36,
+      "sepal_length": 5.0,
+      "sepal_width": 3.2,
+      "petal_length": 1.2,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 37,
+      "sepal_length": 5.5,
+      "sepal_width": 3.5,
+      "petal_length": 1.3,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 38,
+      "sepal_length": 4.9,
+      "sepal_width": 3.1,
+      "petal_length": 1.5,
+      "petal_width": 0.1,
+      "category": "setosa"
+    },
+    {
+      "id": 39,
+      "sepal_length": 4.4,
+      "sepal_width": 3.0,
+      "petal_length": 1.3,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 40,
+      "sepal_length": 5.1,
+      "sepal_width": 3.4,
+      "petal_length": 1.5,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 41,
+      "sepal_length": 5.0,
+      "sepal_width": 3.5,
+      "petal_length": 1.3,
+      "petal_width": 0.3,
+      "category": "setosa"
+    },
+    {
+      "id": 42,
+      "sepal_length": 4.5,
+      "sepal_width": 2.3,
+      "petal_length": 1.3,
+      "petal_width": 0.3,
+      "category": "setosa"
+    },
+    {
+      "id": 43,
+      "sepal_length": 4.4,
+      "sepal_width": 3.2,
+      "petal_length": 1.3,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 44,
+      "sepal_length": 5.0,
+      "sepal_width": 3.5,
+      "petal_length": 1.6,
+      "petal_width": 0.6,
+      "category": "setosa"
+    },
+    {
+      "id": 45,
+      "sepal_length": 5.1,
+      "sepal_width": 3.8,
+      "petal_length": 1.9,
+      "petal_width": 0.4,
+      "category": "setosa"
+    },
+    {
+      "id": 46,
+      "sepal_length": 4.8,
+      "sepal_width": 3.0,
+      "petal_length": 1.4,
+      "petal_width": 0.3,
+      "category": "setosa"
+    },
+    {
+      "id": 47,
+      "sepal_length": 5.1,
+      "sepal_width": 3.8,
+      "petal_length": 1.6,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 48,
+      "sepal_length": 4.6,
+      "sepal_width": 3.2,
+      "petal_length": 1.4,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 49,
+      "sepal_length": 5.3,
+      "sepal_width": 3.7,
+      "petal_length": 1.5,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 50,
+      "sepal_length": 5.0,
+      "sepal_width": 3.3,
+      "petal_length": 1.4,
+      "petal_width": 0.2,
+      "category": "setosa"
+    },
+    {
+      "id": 51,
+      "sepal_length": 7.0,
+      "sepal_width": 3.2,
+      "petal_length": 4.7,
+      "petal_width": 1.4,
+      "category": "versicolor"
+    },
+    {
+      "id": 52,
+      "sepal_length": 6.4,
+      "sepal_width": 3.2,
+      "petal_length": 4.5,
+      "petal_width": 1.5,
+      "category": "versicolor"
+    },
+    {
+      "id": 53,
+      "sepal_length": 6.9,
+      "sepal_width": 3.1,
+      "petal_length": 4.9,
+      "petal_width": 1.5,
+      "category": "versicolor"
+    },
+    {
+      "id": 54,
+      "sepal_length": 5.5,
+      "sepal_width": 2.3,
+      "petal_length": 4.0,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 55,
+      "sepal_length": 6.5,
+      "sepal_width": 2.8,
+      "petal_length": 4.6,
+      "petal_width": 1.5,
+      "category": "versicolor"
+    },
+    {
+      "id": 56,
+      "sepal_length": 5.7,
+      "sepal_width": 2.8,
+      "petal_length": 4.5,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 57,
+      "sepal_length": 6.3,
+      "sepal_width": 3.3,
+      "petal_length": 4.7,
+      "petal_width": 1.6,
+      "category": "versicolor"
+    },
+    {
+      "id": 58,
+      "sepal_length": 4.9,
+      "sepal_width": 2.4,
+      "petal_length": 3.3,
+      "petal_width": 1.0,
+      "category": "versicolor"
+    },
+    {
+      "id": 59,
+      "sepal_length": 6.6,
+      "sepal_width": 2.9,
+      "petal_length": 4.6,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 60,
+      "sepal_length": 5.2,
+      "sepal_width": 2.7,
+      "petal_length": 3.9,
+      "petal_width": 1.4,
+      "category": "versicolor"
+    },
+    {
+      "id": 61,
+      "sepal_length": 5.0,
+      "sepal_width": 2.0,
+      "petal_length": 3.5,
+      "petal_width": 1.0,
+      "category": "versicolor"
+    },
+    {
+      "id": 62,
+      "sepal_length": 5.9,
+      "sepal_width": 3.0,
+      "petal_length": 4.2,
+      "petal_width": 1.5,
+      "category": "versicolor"
+    },
+    {
+      "id": 63,
+      "sepal_length": 6.0,
+      "sepal_width": 2.2,
+      "petal_length": 4.0,
+      "petal_width": 1.0,
+      "category": "versicolor"
+    },
+    {
+      "id": 64,
+      "sepal_length": 6.1,
+      "sepal_width": 2.9,
+      "petal_length": 4.7,
+      "petal_width": 1.4,
+      "category": "versicolor"
+    },
+    {
+      "id": 65,
+      "sepal_length": 5.6,
+      "sepal_width": 2.9,
+      "petal_length": 3.6,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 66,
+      "sepal_length": 6.7,
+      "sepal_width": 3.1,
+      "petal_length": 4.4,
+      "petal_width": 1.4,
+      "category": "versicolor"
+    },
+    {
+      "id": 67,
+      "sepal_length": 5.6,
+      "sepal_width": 3.0,
+      "petal_length": 4.5,
+      "petal_width": 1.5,
+      "category": "versicolor"
+    },
+    {
+      "id": 68,
+      "sepal_length": 5.8,
+      "sepal_width": 2.7,
+      "petal_length": 4.1,
+      "petal_width": 1.0,
+      "category": "versicolor"
+    },
+    {
+      "id": 69,
+      "sepal_length": 6.2,
+      "sepal_width": 2.2,
+      "petal_length": 4.5,
+      "petal_width": 1.5,
+      "category": "versicolor"
+    },
+    {
+      "id": 70,
+      "sepal_length": 5.6,
+      "sepal_width": 2.5,
+      "petal_length": 3.9,
+      "petal_width": 1.1,
+      "category": "versicolor"
+    },
+    {
+      "id": 71,
+      "sepal_length": 5.9,
+      "sepal_width": 3.2,
+      "petal_length": 4.8,
+      "petal_width": 1.8,
+      "category": "versicolor"
+    },
+    {
+      "id": 72,
+      "sepal_length": 6.1,
+      "sepal_width": 2.8,
+      "petal_length": 4.0,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 73,
+      "sepal_length": 6.3,
+      "sepal_width": 2.5,
+      "petal_length": 4.9,
+      "petal_width": 1.5,
+      "category": "versicolor"
+    },
+    {
+      "id": 74,
+      "sepal_length": 6.1,
+      "sepal_width": 2.8,
+      "petal_length": 4.7,
+      "petal_width": 1.2,
+      "category": "versicolor"
+    },
+    {
+      "id": 75,
+      "sepal_length": 6.4,
+      "sepal_width": 2.9,
+      "petal_length": 4.3,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 76,
+      "sepal_length": 6.6,
+      "sepal_width": 3.0,
+      "petal_length": 4.4,
+      "petal_width": 1.4,
+      "category": "versicolor"
+    },
+    {
+      "id": 77,
+      "sepal_length": 6.8,
+      "sepal_width": 2.8,
+      "petal_length": 4.8,
+      "petal_width": 1.4,
+      "category": "versicolor"
+    },
+    {
+      "id": 78,
+      "sepal_length": 6.7,
+      "sepal_width": 3.0,
+      "petal_length": 5.0,
+      "petal_width": 1.7,
+      "category": "versicolor"
+    },
+    {
+      "id": 79,
+      "sepal_length": 6.0,
+      "sepal_width": 2.9,
+      "petal_length": 4.5,
+      "petal_width": 1.5,
+      "category": "versicolor"
+    },
+    {
+      "id": 80,
+      "sepal_length": 5.7,
+      "sepal_width": 2.6,
+      "petal_length": 3.5,
+      "petal_width": 1.0,
+      "category": "versicolor"
+    },
+    {
+      "id": 81,
+      "sepal_length": 5.5,
+      "sepal_width": 2.4,
+      "petal_length": 3.8,
+      "petal_width": 1.1,
+      "category": "versicolor"
+    },
+    {
+      "id": 82,
+      "sepal_length": 5.5,
+      "sepal_width": 2.4,
+      "petal_length": 3.7,
+      "petal_width": 1.0,
+      "category": "versicolor"
+    },
+    {
+      "id": 83,
+      "sepal_length": 5.8,
+      "sepal_width": 2.7,
+      "petal_length": 3.9,
+      "petal_width": 1.2,
+      "category": "versicolor"
+    },
+    {
+      "id": 84,
+      "sepal_length": 6.0,
+      "sepal_width": 2.7,
+      "petal_length": 5.1,
+      "petal_width": 1.6,
+      "category": "versicolor"
+    },
+    {
+      "id": 85,
+      "sepal_length": 5.4,
+      "sepal_width": 3.0,
+      "petal_length": 4.5,
+      "petal_width": 1.5,
+      "category": "versicolor"
+    },
+    {
+      "id": 86,
+      "sepal_length": 6.0,
+      "sepal_width": 3.4,
+      "petal_length": 4.5,
+      "petal_width": 1.6,
+      "category": "versicolor"
+    },
+    {
+      "id": 87,
+      "sepal_length": 6.7,
+      "sepal_width": 3.1,
+      "petal_length": 4.7,
+      "petal_width": 1.5,
+      "category": "versicolor"
+    },
+    {
+      "id": 88,
+      "sepal_length": 6.3,
+      "sepal_width": 2.3,
+      "petal_length": 4.4,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 89,
+      "sepal_length": 5.6,
+      "sepal_width": 3.0,
+      "petal_length": 4.1,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 90,
+      "sepal_length": 5.5,
+      "sepal_width": 2.5,
+      "petal_length": 4.0,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 91,
+      "sepal_length": 5.5,
+      "sepal_width": 2.6,
+      "petal_length": 4.4,
+      "petal_width": 1.2,
+      "category": "versicolor"
+    },
+    {
+      "id": 92,
+      "sepal_length": 6.1,
+      "sepal_width": 3.0,
+      "petal_length": 4.6,
+      "petal_width": 1.4,
+      "category": "versicolor"
+    },
+    {
+      "id": 93,
+      "sepal_length": 5.8,
+      "sepal_width": 2.6,
+      "petal_length": 4.0,
+      "petal_width": 1.2,
+      "category": "versicolor"
+    },
+    {
+      "id": 94,
+      "sepal_length": 5.0,
+      "sepal_width": 2.3,
+      "petal_length": 3.3,
+      "petal_width": 1.0,
+      "category": "versicolor"
+    },
+    {
+      "id": 95,
+      "sepal_length": 5.6,
+      "sepal_width": 2.7,
+      "petal_length": 4.2,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 96,
+      "sepal_length": 5.7,
+      "sepal_width": 3.0,
+      "petal_length": 4.2,
+      "petal_width": 1.2,
+      "category": "versicolor"
+    },
+    {
+      "id": 97,
+      "sepal_length": 5.7,
+      "sepal_width": 2.9,
+      "petal_length": 4.2,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 98,
+      "sepal_length": 6.2,
+      "sepal_width": 2.9,
+      "petal_length": 4.3,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 99,
+      "sepal_length": 5.1,
+      "sepal_width": 2.5,
+      "petal_length": 3.0,
+      "petal_width": 1.1,
+      "category": "versicolor"
+    },
+    {
+      "id": 100,
+      "sepal_length": 5.7,
+      "sepal_width": 2.8,
+      "petal_length": 4.1,
+      "petal_width": 1.3,
+      "category": "versicolor"
+    },
+    {
+      "id": 101,
+      "sepal_length": 6.3,
+      "sepal_width": 3.3,
+      "petal_length": 6.0,
+      "petal_width": 2.5,
+      "category": "virginica"
+    },
+    {
+      "id": 102,
+      "sepal_length": 5.8,
+      "sepal_width": 2.7,
+      "petal_length": 5.1,
+      "petal_width": 1.9,
+      "category": "virginica"
+    },
+    {
+      "id": 103,
+      "sepal_length": 7.1,
+      "sepal_width": 3.0,
+      "petal_length": 5.9,
+      "petal_width": 2.1,
+      "category": "virginica"
+    },
+    {
+      "id": 104,
+      "sepal_length": 6.3,
+      "sepal_width": 2.9,
+      "petal_length": 5.6,
+      "petal_width": 1.8,
+      "category": "virginica"
+    },
+    {
+      "id": 105,
+      "sepal_length": 6.5,
+      "sepal_width": 3.0,
+      "petal_length": 5.8,
+      "petal_width": 2.2,
+      "category": "virginica"
+    },
+    {
+      "id": 106,
+      "sepal_length": 7.6,
+      "sepal_width": 3.0,
+      "petal_length": 6.6,
+      "petal_width": 2.1,
+      "category": "virginica"
+    },
+    {
+      "id": 107,
+      "sepal_length": 4.9,
+      "sepal_width": 2.5,
+      "petal_length": 4.5,
+      "petal_width": 1.7,
+      "category": "virginica"
+    },
+    {
+      "id": 108,
+      "sepal_length": 7.3,
+      "sepal_width": 2.9,
+      "petal_length": 6.3,
+      "petal_width": 1.8,
+      "category": "virginica"
+    },
+    {
+      "id": 109,
+      "sepal_length": 6.7,
+      "sepal_width": 2.5,
+      "petal_length": 5.8,
+      "petal_width": 1.8,
+      "category": "virginica"
+    },
+    {
+      "id": 110,
+      "sepal_length": 7.2,
+      "sepal_width": 3.6,
+      "petal_length": 6.1,
+      "petal_width": 2.5,
+      "category": "virginica"
+    },
+    {
+      "id": 111,
+      "sepal_length": 6.5,
+      "sepal_width": 3.2,
+      "petal_length": 5.1,
+      "petal_width": 2.0,
+      "category": "virginica"
+    },
+    {
+      "id": 112,
+      "sepal_length": 6.4,
+      "sepal_width": 2.7,
+      "petal_length": 5.3,
+      "petal_width": 1.9,
+      "category": "virginica"
+    },
+    {
+      "id": 113,
+      "sepal_length": 6.8,
+      "sepal_width": 3.0,
+      "petal_length": 5.5,
+      "petal_width": 2.1,
+      "category": "virginica"
+    },
+    {
+      "id": 114,
+      "sepal_length": 5.7,
+      "sepal_width": 2.5,
+      "petal_length": 5.0,
+      "petal_width": 2.0,
+      "category": "virginica"
+    },
+    {
+      "id": 115,
+      "sepal_length": 5.8,
+      "sepal_width": 2.8,
+      "petal_length": 5.1,
+      "petal_width": 2.4,
+      "category": "virginica"
+    },
+    {
+      "id": 116,
+      "sepal_length": 6.4,
+      "sepal_width": 3.2,
+      "petal_length": 5.3,
+      "petal_width": 2.3,
+      "category": "virginica"
+    },
+    {
+      "id": 117,
+      "sepal_length": 6.5,
+      "sepal_width": 3.0,
+      "petal_length": 5.5,
+      "petal_width": 1.8,
+      "category": "virginica"
+    },
+    {
+      "id": 118,
+      "sepal_length": 7.7,
+      "sepal_width": 3.8,
+      "petal_length": 6.7,
+      "petal_width": 2.2,
+      "category": "virginica"
+    },
+    {
+      "id": 119,
+      "sepal_length": 7.7,
+      "sepal_width": 2.6,
+      "petal_length": 6.9,
+      "petal_width": 2.3,
+      "category": "virginica"
+    },
+    {
+      "id": 120,
+      "sepal_length": 6.0,
+      "sepal_width": 2.2,
+      "petal_length": 5.0,
+      "petal_width": 1.5,
+      "category": "virginica"
+    },
+    {
+      "id": 121,
+      "sepal_length": 6.9,
+      "sepal_width": 3.2,
+      "petal_length": 5.7,
+      "petal_width": 2.3,
+      "category": "virginica"
+    },
+    {
+      "id": 122,
+      "sepal_length": 5.6,
+      "sepal_width": 2.8,
+      "petal_length": 4.9,
+      "petal_width": 2.0,
+      "category": "virginica"
+    },
+    {
+      "id": 123,
+      "sepal_length": 7.7,
+      "sepal_width": 2.8,
+      "petal_length": 6.7,
+      "petal_width": 2.0,
+      "category": "virginica"
+    },
+    {
+      "id": 124,
+      "sepal_length": 6.3,
+      "sepal_width": 2.7,
+      "petal_length": 4.9,
+      "petal_width": 1.8,
+      "category": "virginica"
+    },
+    {
+      "id": 125,
+      "sepal_length": 6.7,
+      "sepal_width": 3.3,
+      "petal_length": 5.7,
+      "petal_width": 2.1,
+      "category": "virginica"
+    },
+    {
+      "id": 126,
+      "sepal_length": 7.2,
+      "sepal_width": 3.2,
+      "petal_length": 6.0,
+      "petal_width": 1.8,
+      "category": "virginica"
+    },
+    {
+      "id": 127,
+      "sepal_length": 6.2,
+      "sepal_width": 2.8,
+      "petal_length": 4.8,
+      "petal_width": 1.8,
+      "category": "virginica"
+    },
+    {
+      "id": 128,
+      "sepal_length": 6.1,
+      "sepal_width": 3.0,
+      "petal_length": 4.9,
+      "petal_width": 1.8,
+      "category": "virginica"
+    },
+    {
+      "id": 129,
+      "sepal_length": 6.4,
+      "sepal_width": 2.8,
+      "petal_length": 5.6,
+      "petal_width": 2.1,
+      "category": "virginica"
+    },
+    {
+      "id": 130,
+      "sepal_length": 7.2,
+      "sepal_width": 3.0,
+      "petal_length": 5.8,
+      "petal_width": 1.6,
+      "category": "virginica"
+    },
+    {
+      "id": 131,
+      "sepal_length": 7.4,
+      "sepal_width": 2.8,
+      "petal_length": 6.1,
+      "petal_width": 1.9,
+      "category": "virginica"
+    },
+    {
+      "id": 132,
+      "sepal_length": 7.9,
+      "sepal_width": 3.8,
+      "petal_length": 6.4,
+      "petal_width": 2.0,
+      "category": "virginica"
+    },
+    {
+      "id": 133,
+      "sepal_length": 6.4,
+      "sepal_width": 2.8,
+      "petal_length": 5.6,
+      "petal_width": 2.2,
+      "category": "virginica"
+    },
+    {
+      "id": 134,
+      "sepal_length": 6.3,
+      "sepal_width": 2.8,
+      "petal_length": 5.1,
+      "petal_width": 1.5,
+      "category": "virginica"
+    },
+    {
+      "id": 135,
+      "sepal_length": 6.1,
+      "sepal_width": 2.6,
+      "petal_length": 5.6,
+      "petal_width": 1.4,
+      "category": "virginica"
+    },
+    {
+      "id": 136,
+      "sepal_length": 7.7,
+      "sepal_width": 3.0,
+      "petal_length": 6.1,
+      "petal_width": 2.3,
+      "category": "virginica"
+    },
+    {
+      "id": 137,
+      "sepal_length": 6.3,
+      "sepal_width": 3.4,
+      "petal_length": 5.6,
+      "petal_width": 2.4,
+      "category": "virginica"
+    },
+    {
+      "id": 138,
+      "sepal_length": 6.4,
+      "sepal_width": 3.1,
+      "petal_length": 5.5,
+      "petal_width": 1.8,
+      "category": "virginica"
+    },
+    {
+      "id": 139,
+      "sepal_length": 6.0,
+      "sepal_width": 3.0,
+      "petal_length": 4.8,
+      "petal_width": 1.8,
+      "category": "virginica"
+    },
+    {
+      "id": 140,
+      "sepal_length": 6.9,
+      "sepal_width": 3.1,
+      "petal_length": 5.4,
+      "petal_width": 2.1,
+      "category": "virginica"
+    },
+    {
+      "id": 141,
+      "sepal_length": 6.7,
+      "sepal_width": 3.1,
+      "petal_length": 5.6,
+      "petal_width": 2.4,
+      "category": "virginica"
+    },
+    {
+      "id": 142,
+      "sepal_length": 6.9,
+      "sepal_width": 3.1,
+      "petal_length": 5.1,
+      "petal_width": 2.3,
+      "category": "virginica"
+    },
+    {
+      "id": 143,
+      "sepal_length": 5.8,
+      "sepal_width": 2.7,
+      "petal_length": 5.1,
+      "petal_width": 1.9,
+      "category": "virginica"
+    },
+    {
+      "id": 144,
+      "sepal_length": 6.8,
+      "sepal_width": 3.2,
+      "petal_length": 5.9,
+      "petal_width": 2.3,
+      "category": "virginica"
+    },
+    {
+      "id": 145,
+      "sepal_length": 6.7,
+      "sepal_width": 3.3,
+      "petal_length": 5.7,
+      "petal_width": 2.5,
+      "category": "virginica"
+    },
+    {
+      "id": 146,
+      "sepal_length": 6.7,
+      "sepal_width": 3.0,
+      "petal_length": 5.2,
+      "petal_width": 2.3,
+      "category": "virginica"
+    },
+    {
+      "id": 147,
+      "sepal_length": 6.3,
+      "sepal_width": 2.5,
+      "petal_length": 5.0,
+      "petal_width": 1.9,
+      "category": "virginica"
+    },
+    {
+      "id": 148,
+      "sepal_length": 6.5,
+      "sepal_width": 3.0,
+      "petal_length": 5.2,
+      "petal_width": 2.0,
+      "category": "virginica"
+    },
+    {
+      "id": 149,
+      "sepal_length": 6.2,
+      "sepal_width": 3.4,
+      "petal_length": 5.4,
+      "petal_width": 2.3,
+      "category": "virginica"
+    },
+    {
+      "id": 150,
+      "sepal_length": 5.9,
+      "sepal_width": 3.0,
+      "petal_length": 5.1,
+      "petal_width": 1.8,
+      "category": "virginica"
+    }
+  ]
+}
